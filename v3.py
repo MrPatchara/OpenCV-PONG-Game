@@ -62,8 +62,8 @@ while True:
         gameOver = True
 
     if gameOver:
-        img = imgGameOver.copy()
-        cv2.putText(img, f"{score[0],score[1]}", (450, 300), cv2.FONT_HERSHEY_COMPLEX, 2.5, (0, 0, 255), 5)
+        img = imgGameOver
+        
 
     # If game not over move the ball
     else:
