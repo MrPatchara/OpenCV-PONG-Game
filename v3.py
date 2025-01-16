@@ -24,6 +24,10 @@ speedY = 15
 gameOver = False
 score = [0, 0]
 
+# Create a fullscreen window
+cv2.namedWindow("Image", cv2.WND_PROP_FULLSCREEN)
+cv2.setWindowProperty("Image", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+
 while True:
     _, img = cap.read()
     img = cv2.flip(img, 1)
@@ -63,7 +67,8 @@ while True:
 
     if gameOver:
         img = imgGameOver
-        
+        cv2.putText(img, str(score[0] + score[1]).zfill(2), (585, 360), cv2.FONT_HERSHEY_COMPLEX,
+                    2.5, (0, 0, 255), 5)  # Change color to red (0, 0, 255)
 
     # If game not over move the ball
     else:
@@ -92,3 +97,8 @@ while True:
         gameOver = False
         score = [0, 0]
         imgGameOver = cv2.imread("Resources/gameOver.png")
+    elif key == 27:  # Esc key to quit
+        break
+
+cap.release()
+cv2.destroyAllWindows()
