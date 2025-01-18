@@ -92,8 +92,8 @@ while True:
     key = cv2.waitKey(1)
     if key == ord('r'):
         ballPos = [100, 100]
-        speedX = 15
-        speedY = 15
+        speedX = 35
+        speedY = 35
         gameOver = False
         score = [0, 0]
         imgGameOver = cv2.imread("Resources/gameOver.png")
