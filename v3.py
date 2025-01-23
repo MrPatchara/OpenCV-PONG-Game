@@ -2,6 +2,7 @@ import cv2
 import cvzone
 from cvzone.HandTrackingModule import HandDetector
 import numpy as np
+import time
 
 cap = cv2.VideoCapture(0)
 cap.set(3, 1280)
@@ -23,10 +24,31 @@ speedX = 15
 speedY = 15
 gameOver = False
 score = [0, 0]
+stage = 1
 
 # Create a fullscreen window
 cv2.namedWindow("Image", cv2.WND_PROP_FULLSCREEN)
 cv2.setWindowProperty("Image", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+
+def update_stage(score):
+    global stage, speedX, speedY, ballPos
+    total_score = score[0] + score[1]
+    new_stage = total_score // 5 + 1
+    if new_stage != stage:
+        stage = new_stage
+        speedX = 15 + (stage - 1) * 5
+        speedY = 15 + (stage - 1) * 5
+        ballPos = [640, 360]  # Reset ball position to center
+        return True
+    return False
+
+def countdown():
+    for i in range(3, 0, -1):
+        img = imgBackground.copy()
+        cv2.putText(img, f"Stage {stage}", (540, 300), cv2.FONT_HERSHEY_COMPLEX, 3, (0, 255, 0), 5)
+        cv2.putText(img, f"Starting in {i}", (500, 400), cv2.FONT_HERSHEY_COMPLEX, 2, (0, 255, 0), 5)
+        cv2.imshow("Image", img)
+        cv2.waitKey(1000)
 
 while True:
     _, img = cap.read()
@@ -72,6 +94,8 @@ while True:
 
     # If game not over move the ball
     else:
+        if update_stage(score):
+            countdown()
 
         # Move the Ball
         if ballPos[1] >= 500 or ballPos[1] <= 10:
@@ -85,6 +109,7 @@ while True:
 
         cv2.putText(img, str(score[0]), (300, 650), cv2.FONT_HERSHEY_COMPLEX, 3, (0, 0, 255), 5)
         cv2.putText(img, str(score[1]), (900, 650), cv2.FONT_HERSHEY_COMPLEX, 3, (0, 0, 255), 5)
+        cv2.putText(img, f"Stage {stage}", (600, 50), cv2.FONT_HERSHEY_COMPLEX, 2, (0, 255, 0), 5)
 
     img[580:700, 20:233] = cv2.resize(imgRaw, (213, 120))
 
@@ -92,10 +117,11 @@ while True:
     key = cv2.waitKey(1)
     if key == ord('r'):
         ballPos = [100, 100]
-        speedX = 35
-        speedY = 35
+        speedX = 15
+        speedY = 15
         gameOver = False
         score = [0, 0]
+        stage = 1
         imgGameOver = cv2.imread("Resources/gameOver.png")
     elif key == 27:  # Esc key to quit
         break
